@@ -19,6 +19,18 @@ float readDistance(int trigPin, int echoPin) {
   float distance = duration * 0.034 / 2;           // Convert to cm
   return distance;                                // Return distance
 }
+void updateDisplay() {
+  lcd.setCursor(0, 0);                            // Move to first line
+  lcd.print("Occupancy:     ");                  // Clear previous text
+  lcd.setCursor(11, 0);                           // Move to number position
+  lcd.print(occupancy);                           // Show current count
+
+  lcd.setCursor(0, 1);                            // Move to second line
+  lcd.print("Status:       ");                   // Clear previous status
+  lcd.setCursor(8, 1);                            // Position for status
+  lcd.print(alarmTriggered ? "ALARM" : "OK");     // Show "ALARM" or "OK"
+}
+
 
 void loop() {
 
@@ -36,14 +48,4 @@ void loop() {
         occupancy--;
          delay(1500); // Debounce delay to avoid double count
 }
-// Update LCD with current occupancy and status
-lcd.setCursor(0, 0);                          // Move cursor to first line
-lcd.print("Occupancy:     ");                // Clear previous content
-lcd.setCursor(11, 0);                         // Move cursor to display number
-lcd.print(occupancy);                         // Display updated occupancy
 
-lcd.setCursor(0, 1);                          // Move to second line
-lcd.print("Status:       ");                 // Clear previous status
-lcd.setCursor(8, 1);                          // Move to status position
-lcd.print(alarmTriggered ? "ALARM" : "OK");   // Display alarm status
-}
