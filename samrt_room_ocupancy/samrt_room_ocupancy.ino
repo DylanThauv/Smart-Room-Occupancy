@@ -1,6 +1,5 @@
 //Dylan Thauvette and Stephen Tudor
 //dawson college
-//
 //Smart Room Ocupancy Sensor
 
 #define TRIG_IN x   // Trigger pin for entrance sensor
@@ -37,4 +36,14 @@ void loop() {
         occupancy--;
          delay(1500); // Debounce delay to avoid double count
 }
+// Update LCD with current occupancy and status
+lcd.setCursor(0, 0);                          // Move cursor to first line
+lcd.print("Occupancy:     ");                // Clear previous content
+lcd.setCursor(11, 0);                         // Move cursor to display number
+lcd.print(occupancy);                         // Display updated occupancy
+
+lcd.setCursor(0, 1);                          // Move to second line
+lcd.print("Status:       ");                 // Clear previous status
+lcd.setCursor(8, 1);                          // Move to status position
+lcd.print(alarmTriggered ? "ALARM" : "OK");   // Display alarm status
 }
