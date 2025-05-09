@@ -1,11 +1,25 @@
 //Dylan Thauvette and Stephen Tudor
 //dawson college
 //
+//Smart Room Ocupancy Sensor
 
 #define TRIG_IN x   // Trigger pin for entrance sensor
 #define ECHO_IN x   // Echo pin for entrance sensor
 #define TRIG_OUT x  // Trigger pin for exit sensor
 #define ECHO_OUT x  // Echo pin for exit sensor
+
+// This function reads distance from an ultrasonic sensor
+float readDistance(int trigPin, int echoPin) {
+  digitalWrite(trigPin, LOW);       // Ensure trigger pin is LOW
+  delayMicroseconds(2);             // Short delay to stabilize
+  digitalWrite(trigPin, HIGH);      // Send 10µs pulse to trigger
+  delayMicroseconds(10);            // Keep HIGH for 10µs
+  digitalWrite(trigPin, LOW);       // End trigger pulse
+
+  float duration = pulseIn(echoPin, HIGH);         // Read echo duration
+  float distance = duration * 0.034 / 2;           // Convert to cm
+  return distance;                                // Return distance
+}
 
 void loop() {
 
