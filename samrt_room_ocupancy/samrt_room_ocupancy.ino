@@ -142,6 +142,9 @@ void loop() {
  if (occupancy >= MAX_OCCUPANCY) { // If over the limit
     triggerAlarm();           // Activate alarm
   }
+  if (occupancy< MAX_OCCUPANCY) {
+    digitalWrite (BUZZER_PIN, LOW);
+  }
   handleButtonPress();        // Listen for manual alarm toggle
   updateDisplay();            // Refresh LCD display
   delay(200);                 // Loop delay
