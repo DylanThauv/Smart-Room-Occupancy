@@ -3,26 +3,29 @@
 // Uses: 2x Ultrasonic Sensors, LCD (I2C), Button, Buzzer
 // Goal: Count people in/out, enforce limit, toggle alarm with button
 
-#include <y> // Replace with: Wire.h (I2C communication for LCD)
-#include <y> // Replace with: LiquidCrystal_I2C.h (LCD display library)
+#include <Wire.h> // Replace with: Wire.h (I2C communication for LCD)
+#include <LiquidCrystal.h> //Replace with: LiquidCrystal.h (LCD display library)
+
+// Define LCD pin connections (change these according to your wiring)
+const int RS = 12, EN = 11, D4 = 5, D5 = 4, D6 = 3, D7 = 2;
+
 
 // Define pin assignments
-#define TRIG_IN x     // Trigger pin for entrance ultrasonic sensor
-#define ECHO_IN x     // Echo pin for entrance ultrasonic sensor
-#define TRIG_OUT x    // Trigger pin for exit ultrasonic sensor
-#define ECHO_OUT x    // Echo pin for exit ultrasonic sensor
-#define BUTTON_PIN x  // Pin connected to the alarm toggle button
-#define BUZZER_PIN x  // Pin connected to the buzzer output
+#define TRIG_IN 8     // Trigger pin for entrance ultrasonic sensor
+#define ECHO_IN 9     // Echo pin for entrance ultrasonic sensor
+#define TRIG_OUT 10    // Trigger pin for exit ultrasonic sensor
+#define ECHO_OUT  13  // Echo pin for exit ultrasonic sensor
+#define BUTTON_PIN 6  // Pin connected to the alarm toggle button
+#define BUZZER_PIN 7  // Pin connected to the buzzer output
 
 // Global state variables
 int occupancy = 0;                      // Current number of people in the room
-const int MAX_OCCUPANCY = 5;           // Maximum number of people allowed
+const int MAX_OCCUPANCY = 3;           // Maximum number of people allowed
 bool alarmTriggered = false;           // Tracks whether the alarm is active
 bool lastButtonState = HIGH;           // Stores previous state of the button for edge detection
 
-// Create LCD display object using I2C address 0x27, with 16 columns and 2 rows
-LiquidCrystal_I2C lcd(0x27, 16, 2);
-
+// Create LCD object for standard 16x2 screen
+LiquidCrystal lcd(RS, EN, D4, D5, D6, D7);
 // ----------- SENSOR MODULE -----------
 
 // Initializes ultrasonic sensor pins
@@ -63,8 +66,7 @@ void checkEntryExit() {
 
 // Sets up the LCD display
 void setupDisplay() {
-  lcd.init();                // Initialize LCD
-  lcd.backlight();           // Turn on backlight
+  lcd.begin(16,2);                // Initialize LCD
   lcd.setCursor(0, 0);       // Set cursor to first line
   lcd.print("Occupancy: 0"); // Display initial occupancy
   lcd.setCursor(0, 1);       // Set cursor to second line
