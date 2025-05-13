@@ -118,11 +118,12 @@ void toggleAlarm() {
 // Detects a button press and toggles the alarm
 void handleButtonPress() {
   bool buttonState = digitalRead(BUTTON_PIN); // Read current button state
-  if (buttonState == LOW && lastButtonState == HIGH) { // Check for new press
-    toggleAlarm();                       // Toggle alarm state
-    delay(200);                          // Debounce delay
+  if (buttonState == LOW && lastButtonState == HIGH) { // New press detected
+    toggleAlarm();      // Toggle the alarm state
+    occupancy = 0;      // Reset occupancy to 0
+    delay(200);         // Debounce delay
   }
-  lastButtonState = buttonState;         // Update last state
+  lastButtonState = buttonState; // Update last state
 }
 
 // ----------- ARDUINO STANDARD FUNCTIONS -----------
