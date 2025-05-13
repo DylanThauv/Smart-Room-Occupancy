@@ -37,20 +37,20 @@ void setupUltrasonicSensors() {
 }
 
 // Reads distance from ultrasonic sensor using trigger and echo pins
-long readDistance(int trigPin, int echoPin) {
+float readDistance(int trigPin, int echoPin) {
   digitalWrite(trigPin, LOW);            // Ensure trigger is LOW
   delayMicroseconds(2);                  // Small delay for stability
   digitalWrite(trigPin, HIGH);           // Trigger ultrasonic burst
   delayMicroseconds(10);                 // Duration of burst
   digitalWrite(trigPin, LOW);            // Turn off trigger
-  long duration = pulseIn(echoPin, HIGH); // Read echo duration
+  float duration = pulseIn(echoPin, HIGH); // Read echo duration
   return duration * 0.034 / 2;           // Convert time to distance in cm
 }
 
 // Monitors both sensors to detect entry and exit
 void checkEntryExit() {
-  long distIn = readDistance(TRIG_IN, ECHO_IN);   // Measure distance at entrance
-  long distOut = readDistance(TRIG_OUT, ECHO_OUT); // Measure distance at exit
+  float distIn = readDistance(TRIG_IN, ECHO_IN);   // Measure distance at entrance
+  float distOut = readDistance(TRIG_OUT, ECHO_OUT); // Measure distance at exit
 
   if (distIn < 20) {         // If object detected close at entrance
     occupancy++;             // Increase occupancy count
@@ -65,13 +65,8 @@ void checkEntryExit() {
 // ----------- DISPLAY MODULE -----------
 
 // Sets up the LCD display
-void setupDisplay() {
-  lcd.begin(16,2);                // Initialize LCD
-  lcd.setCursor(0, 0);       // Set cursor to first line
-  lcd.print("Occupancy: 0"); // Display initial occupancy
-  lcd.setCursor(0, 1);       // Set cursor to second line
-  lcd.print("Status: OK");   // Display initial status
-}
+
+
 
 // Updates the content on the LCD
 void updateDisplay() {
@@ -79,7 +74,6 @@ void updateDisplay() {
   lcd.print("Occupancy:     ");    // Clear existing number
   lcd.setCursor(11, 0);            // Move cursor to position to print number
   lcd.print(occupancy);           // Display current occupancy
-
   lcd.setCursor(0, 1);             // Move cursor to start of second line
   lcd.print("Status:       ");     // Clear existing status
   lcd.setCursor(8, 1);             // Move to status position
@@ -127,20 +121,26 @@ void handleButtonPress() {
 // Runs once at startup
 void setup() {
   setupUltrasonicSensors();   // Configure ultrasonic pins
-  setupDisplay();             // Initialize display
   setupAlarmSystem();         // Initialize alarm system
   Serial.begin(9600);         // Start serial communication
+  lcd.begin(16,2);                // Initialize LCD
 }
 
 // Runs repeatedly
 void loop() {
-  checkEntryExit();           // Check for entries or exits
+  lcd.clear();
+ lcd.setCursor(0, 0);       // Set cursor to first line
+  lcd.print("Occupancy: 0"); // Display initial occupancy
+  lcd.setCursor(0, 1);       // Set cursor to second line
+  lcd.print("Status: OK");   // Display initial status
 
-  if (occupancy >= MAX_OCCUPANCY) { // If over the limit
+  checkEntryExit();           // Check for entries or exits
+ if (occupancy >= MAX_OCCUPANCY) { // If over the limit
     triggerAlarm();           // Activate alarm
   }
-
   handleButtonPress();        // Listen for manual alarm toggle
   updateDisplay();            // Refresh LCD display
   delay(200);                 // Loop delay
+
+
 }
