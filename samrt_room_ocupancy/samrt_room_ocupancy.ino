@@ -46,19 +46,30 @@ float readDistance(int trigPin, int echoPin) {
   float duration = pulseIn(echoPin, HIGH); // Read echo duration
   return duration * 0.034 / 2;           // Convert time to distance in cm
 }
-
-// Monitors both sensors to detect entry and exit
 void checkEntryExit() {
-  float distIn = readDistance(TRIG_IN, ECHO_IN);   // Measure distance at entrance
-  float distOut = readDistance(TRIG_OUT, ECHO_OUT); // Measure distance at exit
+  // Read IN sensor
+  long distIn = readDistance(TRIG_IN, ECHO_IN);
+  delay(100); // Let echoes die out before triggering next sensor
 
-  if (distIn < 20) {         // If object detected close at entrance
-    occupancy++;             // Increase occupancy count
-    delay(1500);             // Wait to avoid double count
+  // Read OUT sensor
+  long distOut = readDistance(TRIG_OUT, ECHO_OUT);
+
+  Serial.print("Distance IN: ");
+  Serial.print(distIn);
+  Serial.print(" cm\t");
+
+  Serial.print("Distance OUT: ");
+  Serial.print(distOut);
+  Serial.println(" cm");
+
+  if (distIn < 20) {
+    occupancy++;
+    delay(1500); // Debounce: allow time for person to move through
   }
-  if (distOut < 20 && occupancy > 0) { // If object detected close at exit
-    occupancy--;             // Decrease occupancy count
-    delay(1500);             // Wait to avoid double count
+
+  if (distOut < 20 && occupancy > 0) {
+    occupancy--;
+    delay(1500);
   }
 }
 
@@ -126,11 +137,6 @@ void setup() {
 
 // Runs repeatedly
 void loop() {
-  lcd.clear();
- lcd.setCursor(0, 0);       // Set cursor to first line
-  lcd.print("Occupancy: 0"); // Display initial occupancy
-  lcd.setCursor(0, 1);       // Set cursor to second line
-  lcd.print("Status: OK");   // Display initial status
 
   checkEntryExit();           // Check for entries or exits
  if (occupancy >= MAX_OCCUPANCY) { // If over the limit
