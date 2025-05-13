@@ -143,7 +143,7 @@ void loop() {
     triggerAlarm();           // Activate alarm
   }
   if (occupancy< MAX_OCCUPANCY) {
-    digitalWrite (BUZZER_PIN, LOW);
+    disableAlarm();
   }
   handleButtonPress();        // Listen for manual alarm toggle
   updateDisplay();            // Refresh LCD display
