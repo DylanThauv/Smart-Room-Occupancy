@@ -3,12 +3,13 @@
 // Uses: 2x Ultrasonic Sensors, LCD (I2C), Button, Buzzer
 // Goal: Count people in/out, enforce limit, toggle alarm with button
 
-#include <Wire.h> // Replace with: Wire.h (I2C communication for LCD)
+#include <Wire.h> // Replace with: Wire.h
 #include <LiquidCrystal.h> //Replace with: LiquidCrystal.h (LCD display library)
 
-// Define LCD pin connections (change these according to your wiring)
-const int RS = 12, EN = 11, D4 = 5, D5 = 4, D6 = 3, D7 = 2;
-
+// Define LCD pin connections 
+const int RS = 12, E = 11, D4 = 5, D5 = 4, D6 = 3, D7 = 2;
+// Create LCD object for standard 16x2 screen
+LiquidCrystal lcd(RS, E, D4, D5, D6, D7);
 
 // Define pin assignments
 #define TRIG_IN 8     // Trigger pin for entrance ultrasonic sensor
@@ -24,8 +25,7 @@ const int MAX_OCCUPANCY = 3;           // Maximum number of people allowed
 bool alarmTriggered = false;           // Tracks whether the alarm is active
 bool lastButtonState = HIGH;           // Stores previous state of the button for edge detection
 
-// Create LCD object for standard 16x2 screen
-LiquidCrystal lcd(RS, EN, D4, D5, D6, D7);
+
 // ----------- SENSOR MODULE -----------
 
 // Initializes ultrasonic sensor pins
@@ -62,14 +62,12 @@ void checkEntryExit() {
   }
 }
 
-// ----------- DISPLAY MODULE -----------
-
-// Sets up the LCD display
 
 
 
 // Updates the content on the LCD
 void updateDisplay() {
+  lcd.clear();                      // clears the lcd to not overload
   lcd.setCursor(0, 0);             // Move cursor to start of first line
   lcd.print("Occupancy:     ");    // Clear existing number
   lcd.setCursor(11, 0);            // Move cursor to position to print number
@@ -141,6 +139,7 @@ void loop() {
   handleButtonPress();        // Listen for manual alarm toggle
   updateDisplay();            // Refresh LCD display
   delay(200);                 // Loop delay
+  
 
 
 }
